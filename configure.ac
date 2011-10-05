@@ -71,6 +71,37 @@ case $host in
 	;;
 esac
 
+
+# check if 32-bit or 64-bit to enable double precision
+sixtyfourbit=no
+case $host in
+	*amd64*)
+		sixtyfourbit=yes
+	;;
+	*x86_64*)
+		sixtyfourbit=yes
+	;;
+	*darwin1*)
+		sixtyfourbit=yes
+	;;
+esac
+echo "checking if 64-bit host... $sixtyfourbit"
+
+AC_ARG_ENABLE([double-precision],
+	[AS_HELP_STRING([--enable-double-precision], [use a 64-bit double as the base number format])], 
+	[doubleprecision=$enableval],
+	[doubleprecision=$sixtyfourbit])
+
+echo "checking if double precision is enabled... $doubleprecision"
+if test x$doubleprecision = xyes; then
+	CFLAGS="$CFLAGS -DPD_FLOAT_PRECISION=64"
+	echo "   building using 64-bit double as base number"
+else
+	CFLAGS="$CFLAGS -DPD_FLOAT_PRECISION=32"
+	echo "   building using 32-bit float as base number"
+fi
+
+
 PD_CHECK_UNIVERSAL(ARCH, universal=yes, universal=no)
 AM_CONDITIONAL(UNIVERSAL, test x$universal = xyes)
 if test "x${universal}" = "xyes"; then
