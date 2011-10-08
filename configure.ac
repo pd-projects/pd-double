@@ -94,10 +94,10 @@ AC_ARG_ENABLE([double-precision],
 
 echo "checking if double precision is enabled... $doubleprecision"
 if test x$doubleprecision = xyes; then
-	CFLAGS="$CFLAGS -DPD_FLOAT_PRECISION=64"
+	AC_DEFINE(PD_FLOAT_PRECISION, 64)
 	echo "   building using 64-bit double as base number"
 else
-	CFLAGS="$CFLAGS -DPD_FLOAT_PRECISION=32"
+	AC_DEFINE(PD_FLOAT_PRECISION, 32)
 	echo "   building using 32-bit float as base number"
 fi
 
