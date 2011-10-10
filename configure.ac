@@ -71,36 +71,23 @@ case $host in
 	;;
 esac
 
-
-# check if 32-bit or 64-bit to enable double precision
-sixtyfourbit=no
-case $host in
-	*amd64*)
-		sixtyfourbit=yes
-	;;
-	*x86_64*)
-		sixtyfourbit=yes
-	;;
-	*darwin1*)
-		sixtyfourbit=yes
-	;;
-esac
-echo "checking if 64-bit host... $sixtyfourbit"
-
 AC_ARG_ENABLE([double-precision],
-	[AS_HELP_STRING([--enable-double-precision], [use a 64-bit double as the base number format])], 
-	[doubleprecision=$enableval],
-	[doubleprecision=$sixtyfourbit])
+	[AS_HELP_STRING([--enable-double-precision], [force the use of 64-bit double as the base number format])], 
+	[doubleprecision=$enableval])
 
-echo "checking if double precision is enabled... $doubleprecision"
+# In m_pd.h, PD_FLOAT_PRECISION is set to the same bitness as the CPU
+# arch.  These options allow you to force either way.
+#
+# force 64-bit double
 if test x$doubleprecision = xyes; then
 	AC_DEFINE(PD_FLOAT_PRECISION, 64)
-	echo "   building using 64-bit double as base number"
-else
-	AC_DEFINE(PD_FLOAT_PRECISION, 32)
-	echo "   building using 32-bit float as base number"
+	echo "forcing 64-bit double as base number"
 fi
-
+# force 32-bit float
+if test x$doubleprecision = xno; then
+	AC_DEFINE(PD_FLOAT_PRECISION, 32)
+	echo "forcing 32-bit float as base number"
+fi
 
 PD_CHECK_UNIVERSAL(ARCH, universal=yes, universal=no)
 AM_CONDITIONAL(UNIVERSAL, test x$universal = xyes)

@@ -65,9 +65,15 @@ extern "C" {
 #define PD_LONGINTTYPE long
 #endif
 
-#ifndef PD_FLOAT_PRECISION                      
-#define PD_FLOAT_PRECISION 32   /* set this to 32 or 64 */
+/* set float size to platform size unless its overridden */
+#ifndef PD_FLOAT_PRECISION
+# if defined(__LP64__) || defined(_WIN64)
+#  define PD_FLOAT_PRECISION 64
+# else
+#  define PD_FLOAT_PRECISION 32
+# endif
 #endif
+
 #if PD_FLOAT_PRECISION == 32
 #define PD_FLOATTYPE float
 #elif PD_FLOAT_PRECISION == 64
@@ -75,6 +81,7 @@ extern "C" {
 #else
 #error invalid PD_FLOATPRECISION: must be 32 or 64
 #endif
+
 typedef PD_LONGINTTYPE t_int;       /* pointer-size integer */
 typedef PD_FLOATTYPE t_float;       /* a float type */
 typedef PD_FLOATTYPE t_floatarg;    /* float type for function calls */
