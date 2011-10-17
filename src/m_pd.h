@@ -65,13 +65,12 @@ extern "C" {
 #define PD_LONGINTTYPE long
 #endif
 
-/* set float size to platform size unless its overridden */
-#ifndef PD_FLOAT_PRECISION
-# if defined(__LP64__) || defined(_WIN64)
-#  define PD_FLOAT_PRECISION 64
-# else
-#  define PD_FLOAT_PRECISION 32
-# endif
+/* float precision default is set to 64 bits, in order to facilitate testing
+of Pd-extended double precision builds, while it is not yet possible to define 
+PD_FLOAT_PRECISION throughout the build system of all external libs otherwise.
+LATER this default should be set to 32 bits, to comply with Pd as we know it  */
+#if !defined(PD_FLOAT_PRECISION)
+#define PD_FLOAT_PRECISION 64   /* 32 for single precision or 64 for double precision */
 #endif
 
 #if PD_FLOAT_PRECISION == 32
