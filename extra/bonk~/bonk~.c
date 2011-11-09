@@ -67,7 +67,6 @@ decay and other times in msec
 #include "ext_obex.h"
 
 typedef double t_floatarg;      /* from m_pd.h */
-typedef float t_float;               /* from m_pd.h */
 #define flog log
 #define fexp exp
 #define fsqrt sqrt
@@ -189,7 +188,7 @@ typedef struct _insig
     void *g_outlet;             /* outlet for raw data */
 #endif
     t_float *g_inbuf;             /* buffered input samples */
-    t_float *g_invec;           /* new input samples */
+    t_sample *g_invec;           /* new input samples */
 } t_insig;
 
 typedef struct _bonk
@@ -764,7 +763,7 @@ static t_int *bonk_perform(t_int *w)
             for (i = 0, gp = x->x_insig; i < ninsig; i++, gp++)
             {
                 t_float *fp = gp->g_inbuf + infill;
-                t_float *in1 = gp->g_invec + onset;
+                t_sample *in1 = gp->g_invec + onset;
                 for (j = 0; j < m; j++)
                     *fp++ = *in1++;
             }

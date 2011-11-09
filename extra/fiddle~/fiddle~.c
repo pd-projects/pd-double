@@ -111,7 +111,6 @@ static fts_symbol_t *dsp_symbol = 0;
 #include "ext.h"
 #include "z_dsp.h"
 #include "fft_mayer.proto.h"
-typedef float t_float;
 typedef double t_floatarg;
 #endif /* MSP */
 
@@ -1391,7 +1390,7 @@ fts_module_t fiddle_module =
 
 static t_int *fiddle_perform(t_int *w)
 {
-    t_float *in = (t_float *)(w[1]);
+    t_sample *in = (t_sample *)(w[1]);
     t_sigfiddle *x = (t_sigfiddle *)(w[2]);
     int n = (int)(w[3]);
     int count;
@@ -1641,7 +1640,7 @@ void fiddle_setup()
 
 static t_int *fiddle_perform(t_int *w)
 {
-    t_float *in = (t_float *)(w[1]);
+    t_sample *in = (t_sample *)(w[1]);
     t_sigfiddle *x = (t_sigfiddle *)(w[2]);
     int n = (int)(w[3]);
     int count,inc = x->x_downsample;

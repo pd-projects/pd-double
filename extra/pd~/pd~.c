@@ -27,7 +27,6 @@
 #include "ext_support.h"
 #include "ext_proto.h"
 #include "ext_obex.h"
-typedef float t_float;
 typedef double t_floatarg;
 #define w_symbol w_sym
 #define A_SYMBOL A_SYM

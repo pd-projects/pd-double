@@ -19,7 +19,6 @@
 #include "ext_proto.h"
 #include "ext_obex.h"
 typedef float t_floatarg;
-typedef float t_float;
 #define t_resizebytes(a, b, c) t_resizebytes((char *)(a), (b), (c))
 #endif
 
@@ -31,7 +30,7 @@ single-precision FFT, invoked as in the Mayer one: */
 #ifdef _MSC_VER /* this is only needed with Microsoft's compiler */
 __declspec(dllimport) extern
 #endif
-void mayer_realfft(int npoints, t_float *buf);
+void mayer_realfft(int npoints, t_sample *buf);
 
 /* this routine is passed a buffer of npoints values, and returns the
 N/2+1 real parts of the DFT (frequency zero through Nyquist), followed
@@ -1114,7 +1113,7 @@ static void sigmund_tick(t_sigmund *x)
 static t_int *sigmund_perform(t_int *w)
 {
     t_sigmund *x = (t_sigmund *)(w[1]);
-    t_sample *in = (t_float *)(w[2]);
+    t_sample *in = (t_sample *)(w[2]);
     int n = (int)(w[3]);
 
     if (x->x_hop % n)
