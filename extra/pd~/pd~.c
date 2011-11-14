@@ -41,6 +41,13 @@ void *pd_tilde_class;
 #ifdef PD
 #include "m_pd.h"
 #include "s_stuff.h"
+#if PD_FLOAT_PRECISION == 32
+#define FLOAT_SPECIFIER "%f"
+#define FLOAT_SPECIFIER_NEWLINE "%g\n"
+#elif PD_FLOAT_PRECISION == 64
+#define FLOAT_SPECIFIER "%lg"
+#define FLOAT_SPECIFIER_NEWLINE "%lf\n"
+#endif
 static t_class *pd_tilde_class;
 char *class_gethelpdir(t_class *c);
 #define ERROR pd_error(x, 
@@ -300,7 +307,7 @@ static t_int *pd_tilde_perform(t_int *w)
     {
         t_sample *fp = x->x_insig[i];
         for (j = 0; j < n; j++)
-            fprintf(x->x_outfd, "%g\n", *fp++);
+            fprintf(x->x_outfd, FLOAT_SPECIFIER_NEWLINE, *fp++);
         for (; j < DEFDACBLKSIZE; j++)
             fprintf(x->x_outfd, "0\n");
     }
@@ -331,7 +338,7 @@ static t_int *pd_tilde_perform(t_int *w)
                 if (numbuffill)
                 {
                     numbuf[numbuffill] = 0;
-                    if (sscanf(numbuf, "%f", &z) < 1)
+                    if (sscanf(numbuf, FLOAT_SPECIFIER, &z) < 1)
                         continue;
                     if (i < x->x_noutsig)
                         x->x_outsig[i][j] = z;
