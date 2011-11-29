@@ -49,13 +49,9 @@ case $host in
 *mingw*)
 	WINDOWS=yes
 	MINGW=yes
-# ASIO doesn't build yet with the autotools setup. We need to figure out how
-#        to make the final linking phase use g++
-#		asio=yes
+	asio=yes
 	portaudio=yes
 	CFLAGS="$CFLAGS -O6 -funroll-loops -fomit-frame-pointer"
-# ASIO is a C++ library, so if its included, then use g++ to build
-	CC=g++
 	EXTERNAL_CFLAGS="-mms-bitfields"
 	EXTERNAL_LDFLAGS="-s -shared -Wl,--enable-auto-import -lpd"
 	EXTERNAL_EXTENSION=dll

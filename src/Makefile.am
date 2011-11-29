@@ -85,6 +85,10 @@ endif
 
 # ASIO needs to go after PORTAUDIO in order for it to link properly
 if ASIO
+# automake hack to force linking with g++
+SUBDIRS = ../asio
+# Dummy C++ source to cause C++ linking.
+nodist_EXTRA_pd_SOURCES = dummy.cxx
 pd_LDADD += ../asio/libasio.la
 endif
 
@@ -138,7 +142,6 @@ if MINGW
 pd_CFLAGS += -DWISHAPP='"wish85.exe"' -DMSW #kludge, MSW should be _WIN32
 pdsend_CFLAGS += -DMSW #kludge, should use _WIN32
 pdreceive_CFLAGS += -DMSW #kludge, should use _WIN32
-bin_PROGRAMS += pd-watchdog
 endif
 
 etags: TAGS

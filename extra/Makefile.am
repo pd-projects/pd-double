@@ -1,6 +1,9 @@
-SUBDIRS=bonk~ choice expr~ fiddle~ loop~ lrshift~ pd~ pique sigmund~ stdout
+SUBDIRS=bonk~ choice expr~ fiddle~ loop~ lrshift~ pique sigmund~ stdout
 
-DIST_SUBDIRS=$(SUBDIRS)
+if !WINDOWS
+SUBDIRS += pd~
+endif
+DIST_SUBDIRS=$(SUBDIRS) pd~
 
 PATCHES    =complex-mod~.pd      hilbert~.pd      rev1-final.pd rev1~.pd rev1-stage.pd rev2~.pd      rev3~.pd
 HELPPATCHES=complex-mod~-help.pd hilbert~-help.pd rev1~-help.pd                        rev2~-help.pd rev3~-help.pd 
