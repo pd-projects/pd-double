@@ -27,7 +27,7 @@ case $host in
 	 EXTERNAL_EXTENSION=pd_darwin
 	fi
 
-	CFLAGS="$CFLAGS -O3 -funroll-loops -fomit-frame-pointer"
+	CFLAGS="$CFLAGS -O3 -funroll-loops"
 	INCLUDES="$INCLUDES -I/sw/include"
 	LDFLAGS="$LDFLAGS -L/sw/lib"
 	EXTERNAL_LDFLAGS="-bundle -undefined dynamic_lookup"
@@ -40,7 +40,7 @@ case $host in
 	if test "x${ANDROID}" = "xno"; then
 	 LINUX=yes
 	 portaudio=yes
-	 CFLAGS="$CFLAGS -O6 -funroll-loops -fomit-frame-pointer"
+	 CFLAGS="$CFLAGS -O6 -funroll-loops"
 	fi
 	EXTERNAL_CFLAGS="-fPIC"
 	EXTERNAL_LDFLAGS="-Wl,--export-dynamic -shared -fPIC"
@@ -49,9 +49,9 @@ case $host in
 *mingw*)
 	WINDOWS=yes
 	MINGW=yes
-	asio=yes
+    asio=yes
 	portaudio=yes
-	CFLAGS="$CFLAGS -O6 -funroll-loops -fomit-frame-pointer"
+	CFLAGS="$CFLAGS -O6 -funroll-loops -DWINVER=0x0501 -D_WIN32_WINNT=0x0501"
 	EXTERNAL_CFLAGS="-mms-bitfields"
 	EXTERNAL_LDFLAGS="-s -shared -Wl,--enable-auto-import -lpd"
 	EXTERNAL_EXTENSION=dll
@@ -60,7 +60,7 @@ case $host in
 	WINDOWS=yes
 	CYGWIN=yes
 	portaudio=yes
-	CFLAGS="$CFLAGS -O6 -funroll-loops -fomit-frame-pointer"
+	CFLAGS="$CFLAGS -O6 -funroll-loops"
 	EXTERNAL_CFLAGS=
 	EXTERNAL_LDFLAGS="-Wl,--export-dynamic -shared -lpd"
 	EXTERNAL_EXTENSION=dll
@@ -156,12 +156,15 @@ dnl TODO implement debug and static
 #AC_ARG_ENABLE(static,   [  --enable-static         link statically],
 #    static=$enableval)
 
-#AC_ARG_ENABLE([debug],
-#	[AS_HELP_STRING([--enable-debug], [use debugging support])], 
-#		[debug=$enableval])
-#if test x$debug = xyes; then
-#    CFLAGS="$CFLAGS -g"
-#fi
+AC_ARG_ENABLE([debug],
+	[AS_HELP_STRING([--enable-debug], [use debugging support])],
+		[debug=$enableval])
+if test x$debug = xyes; then
+    CFLAGS="$CFLAGS -g"
+else
+    # -fomit-frame-pointer causes problems when debugging
+    CFLAGS="$CFLAGS -fomit-frame-pointer"
+fi
 
 dnl ALSA
 dnl shouldn't we use AM_PATH_ALSA from /usr/share/aclocal/alsa.m4
