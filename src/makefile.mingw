@@ -193,7 +193,7 @@ pd.res: pd.rc
 #	--output-lib=vst.a --dllname=vstschedlib.dll s_audio_vst.o pd.a $(LIBS)
 
 externs: 
-	make -C ../extra all
+#	make -C ../extra all
 
 # kludge to put stuff into the pd/bin dir for testing
 testbin: $(PDEXEC) $(PDDLL) pd.com
