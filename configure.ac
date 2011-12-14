@@ -160,7 +160,7 @@ AC_ARG_ENABLE([debug],
 	[AS_HELP_STRING([--enable-debug], [use debugging support])],
 		[debug=$enableval])
 if test x$debug = xyes; then
-    CFLAGS="$CFLAGS -g"
+    CFLAGS="$CFLAGS -g -fno-omit-frame-pointer -Wstrict-aliasing=3"
 else
     # -fomit-frame-pointer causes problems when debugging
     CFLAGS="$CFLAGS -fomit-frame-pointer"
