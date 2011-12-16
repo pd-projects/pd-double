@@ -139,9 +139,9 @@ endif
 #  ------------------ targets ------------------------------------
 #
 
-.PHONY: all install clean externs testbin
+.PHONY: all install clean testbin
 
-all: $(PDDLL) $(PDEXEC) externs pdsend.exe pdreceive.exe pd.com
+all: $(PDDLL) $(PDEXEC) pdsend.exe pdreceive.exe pd.com
 
 $(OBJ) : %.o : %.c
 	$(CC) $(CFLAGS) $(GFLAGS) $(INCLUDE) -c -o $*.o $*.c 
@@ -166,24 +166,19 @@ $(VOBJ) : %.o : %.c
 
 pdsend.exe: u_pdsend.o
 	$(CC) $(CFLAGS) $(LDFLAGS) -o pdsend.exe u_pdsend.o $(LIBS)
-	$(STRIP) pdsend.exe
 
 pdreceive.exe: u_pdreceive.o
 	$(CC) $(CFLAGS) $(LDFLAGS) -o pdreceive.exe u_pdreceive.o $(LIBS)
-	$(STRIP) pdreceive.exe
 
 $(PDEXEC): s_entry.o pd.res
 	$(CC) $(LDFLAGS) -mwindows -o $(PDEXEC) s_entry.o pd.res $(LIBS) -L. -lpd
-	$(STRIP) -s $(PDEXEC)
 
 pd.com: s_entry.o
 	$(CC) $(LDFLAGS) -o pd.com s_entry.o $(LIBS) -L. -lpd
-	$(STRIP) -s pd.com
 
 $(PDDLL): $(OBJC)
 	$(CXX) -shared $(LDFLAGS) -o $(PDDLL) $(OBJC) $(LIBS) \
 		-Wl,--export-all-symbols -Wl,--out-implib=pd.a; 
-	$(STRIP) $(PDDLL)
 
 pd.res: pd.rc
 	windres pd.rc -O coff -o pd.res
@@ -191,9 +186,6 @@ pd.res: pd.rc
 #vstschedlib.dll: $(VOBJ)
 #	$(DLLWRAP) --export-all-symbols --output-def vst.def \
 #	--output-lib=vst.a --dllname=vstschedlib.dll s_audio_vst.o pd.a $(LIBS)
-
-externs: 
-#	make -C ../extra all
 
 # kludge to put stuff into the pd/bin dir for testing
 testbin: $(PDEXEC) $(PDDLL) pd.com
@@ -207,19 +199,23 @@ testbin: $(PDEXEC) $(PDDLL) pd.com
 
 ABOUT_FILE=$(DESTDIR)$(pddocdir)/1.manual/1.introduction.txt
 install:  all
-# locales
-	make libpddir=$(libpddir) -C ../po install
-# install extra stuff
-	make libpddir=$(libpddir) -C ../extra install
+# locales don't have a MinGW makefile yet, but the pd-gui-rewrite one could work
+#	make libpddir=$(libpddir) -C ../po install
 # the real install
+	install -d $(DESTDIR)$(bindir)/../tcl/
+	install -p ../tcl/*.tcl $(DESTDIR)$(bindir)/../tcl/
 	install -d $(DESTDIR)$(bindir)
-	install -p *.tcl $(DESTDIR)$(bindir)/
 	install -p $(PDEXEC) $(DESTDIR)$(bindir)/$(PDEXEC)
+	$(STRIP) $(DESTDIR)$(bindir)/$(PDEXEC)
 	install -p pd.com $(DESTDIR)$(bindir)/pd.com
+	$(STRIP) $(DESTDIR)$(bindir)/pd.com
 	install -p pd.dll $(DESTDIR)$(bindir)/pd.dll
+	$(STRIP) $(DESTDIR)$(bindir)/pd.dll
 	install -p pd.ico $(DESTDIR)$(bindir)/pd.ico
 	install -p pdsend.exe $(DESTDIR)$(bindir)/pdsend.exe
+	$(STRIP) $(DESTDIR)$(bindir)/pdsend.exe
 	install -p pdreceive.exe $(DESTDIR)$(bindir)/pdreceive.exe
+	$(STRIP) $(DESTDIR)$(bindir)/pdreceive.exe
 	for dir in $(shell ls -1 ../doc | grep -v CVS); do \
 		echo "installing $$dir"; \
 		install -d $(DESTDIR)$(pddocdir)/$$dir ; \
@@ -234,16 +230,6 @@ install:  all
 	cat $(ABOUT_FILE).tmp | sed 's|PD_VERSION|Pd version $(PD_VERSION)|' \
 		> $(ABOUT_FILE)
 	rm $(ABOUT_FILE).tmp
-	install -d $(DESTDIR)$(libpddir)/extra
-	install -p $(pd_src)/extra/*/*.dll $(DESTDIR)$(libpddir)/extra
-	install -p $(pd_src)/extra/*.pd $(DESTDIR)$(libpddir)/extra
-	install -d $(DESTDIR)$(pddocdir)/5.reference
-	install -p ../extra/*/*.pd $(DESTDIR)$(pddocdir)/5.reference
-	install -p ../extra/*-help.pd $(DESTDIR)$(pddocdir)/5.reference
-	install -d $(DESTDIR)$(prefix)/startup
-	install -p $(pd_src)/startup/*.* $(DESTDIR)$(prefix)/startup
-	install -d $(DESTDIR)$(prefix)/startup/disabled
-	install -p $(pd_src)/startup/disabled/*.* $(DESTDIR)$(prefix)/startup/disabled
 	install -d $(DESTDIR)$(includedir)
 	install -p m_pd.h $(DESTDIR)$(includedir)/m_pd.h
 	install -p s_stuff.h $(DESTDIR)$(includedir)/s_stuff.h
