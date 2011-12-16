@@ -233,6 +233,9 @@ install:  all
 	install -d $(DESTDIR)$(includedir)
 	install -p m_pd.h $(DESTDIR)$(includedir)/m_pd.h
 	install -p s_stuff.h $(DESTDIR)$(includedir)/s_stuff.h
+	install -d $(DESTDIR)$(includedir)/pdextended
+	install -p g_all_guis.h g_canvas.h m_imp.h m_pd.h s_stuff.h \
+		$(DESTDIR)$(includedir)/pdextended
 	@echo "Pd install succeeded."
 
 
